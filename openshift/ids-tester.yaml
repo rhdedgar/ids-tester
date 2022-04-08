@@ -1,0 +1,33 @@
+---
+apiVersion: v1 
+kind: Template
+metadata:
+  creationTimestamp: null
+  generation: 1
+  labels:
+    provider: openshift
+    component: ids-tester 
+  name: ids-tester 
+objects:
+- apiVersion: batch/v1
+  kind: Job
+  metadata:
+    name: ids-tester 
+  spec:
+    schedule: "05 05 * * 5"
+    jobTemplate:
+      spec:
+        template:
+          metadata:
+            labels:
+              parent: "idstestjob"
+          spec:
+            containers:
+            - name: ids-tester
+              image: "quay.io/dedgar/ids-tester:v0.0.1"
+              command: ["/usr/local/bin/ids-tester.sh"]
+            restartPolicy: OnFailure 
+parameters:
+- description: Project name
+  name: NAMESPACE
+  value: openshift-suricata
